@@ -1,0 +1,10 @@
+ATI			delivers a product information text.
+AT^SSYNC=1	Enables the GPIO5/LED pin to drive a status LED installed in your application
+AT+CPIN?	Read PIN status
+AT+COPS=?	Operator Selection
+AT^SOPS=?	Extended Operator Selection
+AAT+CREG=2	Activates extended URC mode.
+AT+COPS=0	Forces ME to automatically search network operator.
+AT+CREG?	Network registration
+AT+CSQ		Signal quality
+AT^SMSO		Switch Off BG2-E
