@@ -22,6 +22,16 @@
 #define gsm_vcc_enable()	PORTA.OUTSET=GSMVEN
 #define gsm_vcc_disable()	PORTA.OUTCLR=(GSMPC|GSMVEN)
 
+// En=RTSLOW=Request (=+12V)
+#define gsm_rts_enable()	PORTC.OUTCLR=GSMRTS
+#define gsm_rts_disable()	PORTC.OUTSET=GSMRTS
+
+
+// En=DTRLOW=Ready (=+12V)
+#define gsm_dtr_enable()	PORTC.OUTCLR=GSMDTR
+#define gsm_dtr_disable()	PORTC.OUTSET=GSMDTR
+
+
 void gsm_hwinit(void);
 void gsm_on(void);
 

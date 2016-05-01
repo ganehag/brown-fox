@@ -67,7 +67,13 @@
  *****************************************************************************/
 #include "usart_driver.h"
 
-
+/** \defgroup UART USART module interface
+ *  \brief X-mega USART module interface.
+ *
+ *  Contains all needed functions for serial ports
+ *
+ *  @{
+ */
 
 /*! \brief Initializes buffer and selects what USART module to use.
  *
@@ -336,3 +342,5 @@ uint16_t USART_NineBits_GetChar(USART_t * usart)
 		return(usart->DATA);
 	}
 }
+
+/** @} */

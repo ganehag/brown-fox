@@ -1,0 +1,5 @@
+#include "eeprom.h"
+#include <avr/eeprom.h>
+
+const uint16_t EEMEM MB_CRC=0x91a2;
+const uint8_t  EEMEM MB_CONF[][2]={{0x05,0x01},{0x36,0x04},{0x3A,0x01},{0xff,0xff}};

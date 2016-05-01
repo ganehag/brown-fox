@@ -3,7 +3,7 @@
 #include <avr/interrupt.h>
 #include <avr/sleep.h>
 #include <avr/pgmspace.h>
-#include <avr/eeprom.h>
+#include "eeprom.h"
 //#include <avr/wdt.h>
 #include <util/delay.h>
 #include <stdio.h>
@@ -21,6 +21,7 @@
 #include "xmegabaud.h"
 #include "uart.h"
 #include "mbrc1180.h"
+#include "mbus.h"
 
 #include "lib_atsha/sha204_lib_return_codes.h"  // declarations of function return codes
 #include "lib_atsha/sha204_comm_marshaling.h"   // definitions and declarations for the Command module
@@ -348,8 +349,11 @@ int main (void)
 	uint8_t last_gsm=0;
 	
 	static OWI_device devices[MAX_DEVICES];
+	uint8_t mbbuf[256];
 	uint8_t items;
 
+	uint8_t gsminit=0;
+	uint8_t ist=0;
 	
 	rst=RST.STATUS&0x3f;
 
@@ -469,6 +473,12 @@ int main (void)
 			}
 			else if (getkey=='O')
 			{
+				gsminit=1;
+				ist=0;
+			}
+			else if (getkey=='p')
+			{
+				mbus_probe();
 			}
 
 			else if (getkey=='V')
@@ -504,8 +514,7 @@ int main (void)
 			}
 			else if (getkey=='i')
 			{			
-				Transmit_ext('T');
-				printf("R: %c ", Receive_ext());
+				printf("MB Cfg crc: %x\n", mbus_validate());
 			}
 			else if (getkey=='I')
 			{
@@ -513,7 +522,14 @@ int main (void)
 			}
 			else if (getkey=='u')
 			{
-				init_usart_ext(); 
+				mbus_setup((const uint8_t *)MB_CONF);
+				
+			}
+			else if (getkey=='g')
+			{			
+				uint8_t gstat;
+				gstat=PORTC.IN;
+				printf("Ring=%d, CTS=%d, ON=%d", gstat&&0x01, gstat&&0x02, gstat&&0x40);
 			}
 			else if (getkey=='m')
 			{
@@ -621,7 +637,25 @@ int main (void)
 				}
 			}
 		}
-		if (USART_RXBufferData_Available(&USARTBuf_mbus))
+		
+		if (sermux!=3)
+		{	
+			if(mbus_get_package((uint8_t*)&mbbuf)==MBDONE)
+			{
+				uint8_t len;
+				len=mbbuf[0];
+				
+				for (uint8_t fcb=1; fcb<len; fcb++)
+					printf("%x",mbbuf[fcb]);
+					
+				printf("RSSI=-%d", (mbbuf[len]/2));
+				if ((mbbuf[len]%2))
+					printf(".5\n");
+				else
+					printf(".0\n");
+			}
+		}
+		else if (USART_RXBufferData_Available(&USARTBuf_mbus))
 		{
 			uint8_t rxd;
 			Endpoint_WaitUntilReady();
@@ -662,7 +696,7 @@ int main (void)
 			}
 
 			
-			printf("Tick: %03d", rtcc);
+		//	printf("Tick: %03d", rtcc);
 				
 			if (sermux==0)
 			{
@@ -689,6 +723,13 @@ int main (void)
 					printf("Starting main GSM VCC regulator\n");
 					gsm_vcc_enable();
 				}
+			}
+			else if (gsminit)
+			{
+				ist=gsm_init(ist);
+				if (ist==0)
+					gsminit=0;
+			
 			}
 			//rxpoll();
 		}
