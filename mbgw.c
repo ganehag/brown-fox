@@ -22,6 +22,12 @@
 #include "uart.h"
 #include "mbrc1180.h"
 #include "mbus.h"
+#include "gdefs.h"
+#include "gsm.h"
+#include "msghnd.h"
+
+#define SHA204_COMMAND_FUNCTIONS
+
 
 #include "lib_atsha/sha204_lib_return_codes.h"  // declarations of function return codes
 #include "lib_atsha/sha204_comm_marshaling.h"   // definitions and declarations for the Command module
@@ -31,10 +37,11 @@
 // 0.1 Initial.
 
 
-#define WATCHDOG_TIMEOUT        WDT_PER_2KCLK_gc // aprox 2s
+#define WATCHDOG_TIMEOUT        WDT_PER_4KCLK_gc // aprox 2s
 
 
 #define PRECHARGE_TIME		5 // Precharge GSM powersupply 
+
 
 volatile uint8_t rtcc=0;
 
@@ -270,28 +277,34 @@ void test_sha(void)
 	uint8_t i,c=0;
 
 	// Make the command buffer the size of the MAC command.
-	static uint8_t command[MAC_COUNT_LONG];
-
+//	static uint8_t command[MAC_COUNT_LONG];
+	static uint8_t command[CHECKMAC_COUNT];
 	// Make the response buffer the size of a MAC response.
-	static uint8_t response[MAC_RSP_SIZE];
+	static uint8_t response[CHECKMAC_CLIENT_RESPONSE_SIZE];
+
+	static uint8_t response_ok[4]={0x04,0x00,0x03,0x40};
 
    // expected MAC response in mode 0
-	static const uint8_t mac_mode0_response_expected[MAC_RSP_SIZE] =
+	static const uint8_t mac_mode0_response_expected[CHECKMAC_CLIENT_RESPONSE_SIZE] =
 	{
-			MAC_RSP_SIZE,                                   // count
 			0x06, 0x67, 0x00, 0x4F, 0x28, 0x4D, 0x6E, 0x98,
 			0x62, 0x04, 0xF4, 0x60, 0xA3, 0xE8, 0x75, 0x8A,
 			0x59, 0x85, 0xA6, 0x79, 0x96, 0xC4, 0x8A, 0x88,
-			0x46, 0x43, 0x4E, 0xB3, 0xDB, 0x58, 0xA4, 0xFB,
-			0xE5, 0x73                                       // CRC
+			0x46, 0x43, 0x4E, 0xB3, 0xDB, 0x58, 0xA4, 0xFB
 	};
 
 	// data for challenge in MAC mode 0 command
-	const uint8_t challenge[MAC_CHALLENGE_SIZE] = {
+	const uint8_t challenge[CHECKMAC_CLIENT_CHALLENGE_SIZE] = {
 		0x00, 0x11, 0x22, 0x33, 0x44, 0x55, 0x66, 0x77,
 		0x88, 0x99, 0xAA, 0xBB, 0xCC, 0xDD, 0xEE, 0xFF,
 		0x00, 0x11, 0x22, 0x33, 0x44, 0x55, 0x66, 0x77,
 		0x88, 0x99, 0xAA, 0xBB, 0xCC, 0xDD, 0xEE, 0xFF
+	};
+
+	// data for challenge in MAC mode 0 command
+	const uint8_t other[CHECKMAC_OTHER_DATA_SIZE] = {
+		0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+		0x00, 0x00, 0x00, 0x00, 0x00
 	};
 
 	for (i = 0; i < sizeof(response); i++)
@@ -301,15 +314,31 @@ void test_sha(void)
 	ret_code = sha204c_wakeup(&response[0]);
 	if (ret_code != SHA204_SUCCESS)
 		printf("WakeErr");
-
+	
 	// Mac command with mode = 0.
-	ret_code = sha204m_execute(SHA204_MAC, 0, 0, MAC_CHALLENGE_SIZE, (uint8_t *) challenge,
-					0, NULL, 0, NULL, sizeof(command), &command[0], sizeof(response), &response[0]);
+//	ret_code = sha204m_execute(SHA204_MAC, 0, 0, MAC_CHALLENGE_SIZE, (uint8_t *) challenge,
+//					0, NULL, 0, NULL, sizeof(command), &command[0], sizeof(response), &response[0]);
+//	if (ret_code != SHA204_SUCCESS) {
+//		printf("ExecErr %x ",ret_code);
+//			
+//	}
+
+			
+/** \brief This function sends a CheckMAC command to the device.
+ * \param[in]  tx_buffer pointer to transmit buffer
+ * \param[out] rx_buffer pointer to receive buffer
+ * \param[in]  mode selects the hash inputs
+ * \param[in]  key_id slot index of key
+ * \param[in]  client_challenge pointer to client challenge (ignored if mode bit 0 is set)
+ * \param[in]  client_response pointer to client response
+ * \param[in]  other_data pointer to 13 bytes of data used in the client command
+ * \return status of the operation
+ */
+ret_code=sha204m_check_mac(&command[0], &response[0] ,0 , 0, &challenge[0], &mac_mode0_response_expected[0], &other[0]);
 	if (ret_code != SHA204_SUCCESS) {
 		printf("ExecErr %x ",ret_code);
 			
 	}
-
 	// Put device to sleep.
 	ret_code = sha204p_sleep();
 
@@ -319,15 +348,17 @@ void test_sha(void)
 	for (i = 0; i < SHA204_RSP_SIZE_MAX; i++) {
 		printf("%x, ", response[i] );
 	}
-	printf("\nExpected: \t");
-	for (i = 0; i < SHA204_RSP_SIZE_MAX; i++) {
-		printf("%x, ", mac_mode0_response_expected[i]);
-		if (response[i]==mac_mode0_response_expected[i])
+//	printf("\nExpected: \t");
+
+	for (i = 0; i < 4; i++) {
+		if (response[i]!=response_ok[i])
 		{
-			c++;
+			break;
 		}
+		else
+		printf("%d",i);
 	}
-	if (c==SHA204_RSP_SIZE_MAX)
+	if (i==4)
 	{
 		printf("\nIdentical!\n");
 	}
@@ -450,7 +481,7 @@ int main (void)
 			{
 				uint8_t fcc;
 				wdt_reset(); // extra WDR
-				
+				gsm_off();
 				printf_P(PSTR("Boot loader started\n"));
 				CDC_Device_Flush(&VirtualSerial1_CDC_Interface);
 
@@ -459,6 +490,7 @@ int main (void)
 					CDC_Device_USBTask(&VirtualSerial1_CDC_Interface);
 					USB_USBTask();
 				}
+//				USB_Host_ResetBus();
 				USB_Detach();	// Shutdown USB
 				USB_Disable();
 				cli();
@@ -476,6 +508,19 @@ int main (void)
 				gsminit=1;
 				ist=0;
 			}
+			else if (getkey=='K')
+			{
+				uint32_t crc;
+				crc=SP_ApplicationCRC();
+				
+				printf_P(PSTR("!K:A:%06lx"), crc);
+				crc=SP_BootCRC();
+				printf_P(PSTR(" B:%06lx"), crc);
+				uint8_t eecrc;
+				// Missing
+				eecrc=0;
+				printf_P(PSTR(" E:*tbd*\r\n"), eecrc);
+			}
 			else if (getkey=='p')
 			{
 				mbus_probe();
@@ -483,11 +528,13 @@ int main (void)
 
 			else if (getkey=='V')
 			{
-				mbus_configmode(1);
+				gsm_poll_sms();
 			}
 			else if (getkey=='v')
 			{
-				mbus_configmode(0);
+				for(uint8_t lc=0; lc<64; lc++)
+					printf("%c", eeprom_read_byte(EEPAR_1+lc));
+				printf(" N: %x\n", eeprom_read_word(EEPAR_3));
 			}
 			else if (getkey=='t')
 			{
@@ -510,7 +557,9 @@ int main (void)
 			else if (getkey=='s')
 			{	
 			//	sendData(txdata);
-				gsm_vcc_enable();
+			//	gsm_vcc_enable();
+				gsm_simid(&mbbuf,200);
+				printf(mbbuf);			
 			}
 			else if (getkey=='i')
 			{			
@@ -530,6 +579,19 @@ int main (void)
 				uint8_t gstat;
 				gstat=PORTC.IN;
 				printf("Ring=%d, CTS=%d, ON=%d", gstat&&0x01, gstat&&0x02, gstat&&0x40);
+			}
+			else if (getkey=='D')
+			{
+				gsm_identify(&mbbuf,200);
+				printf(mbbuf);
+			}
+			else if (getkey=='S')
+			{
+				gsm_read_sms("3",&mbbuf,200);
+			}
+			else if (getkey=='y')
+			{
+				//gsm_make_ok_response(&mbbuf, 255);
 			}
 			else if (getkey=='m')
 			{
@@ -619,9 +681,11 @@ int main (void)
 				 CDC_Device_SendByte(&VirtualSerial2_CDC_Interface, rxd);
 			}
 		}
-		if (USART_RXBufferData_Available(&USARTBuf_gsm))
+		if (USART_RXBufferData_Available(&USARTBuf_gsm)&&sermux==2)
 		{
 			uint8_t rxd;
+			
+			
 			Endpoint_WaitUntilReady();
 			while(USART_RXBufferData_Available(&USARTBuf_gsm))
 			{
@@ -631,7 +695,12 @@ int main (void)
 				// Are we selected? Then send
 				if (sermux==2)
 				{
-//				
+					if (rxd=='\r')
+						CDC_Device_SendByte(&VirtualSerial2_CDC_Interface,'r');
+					if (rxd=='\n')
+						CDC_Device_SendByte(&VirtualSerial2_CDC_Interface,'n');
+						
+//					
 					CDC_Device_SendByte(&VirtualSerial2_CDC_Interface, rxd);
 //					USART_TXBuffer_PutByte(&USARTBuf_ext,rxd);
 				}
@@ -673,7 +742,54 @@ int main (void)
 				}
 			}
 		}
+		uint8_t tti;
+		if ((tti=gsm_poll(&mbbuf,200))!=0xff)
+		{
+			char tmpbuf[16];
+			char *tmpptr;
+	//		char *tmpline;
+			
 
+		
+			if (tti==GSM_PESP_REG)
+			{
+				printf("Registered on network, %s\n", mbbuf);
+			}
+			else if(tti==GSM_RESP_SMS)
+			{
+				printf("Got SMS");
+				tmpptr=strtok(mbbuf,","); // Get message status;
+				tmpptr=strtok(NULL,","); // Get message id;
+				
+				if (strlen(tmpptr)<16)
+				{
+					strcpy(tmpbuf, tmpptr);
+					printf(" with index %s\n", tmpbuf);
+					gsm_read_sms(tmpbuf,&mbbuf,255);
+							printf(mbbuf);
+				}
+				
+			}
+		
+			else if(tti==GSM_LIST_READSMS)
+			{
+				tmpptr=strtok((char *)mbbuf,","); // Get message id;
+				if (strlen(tmpptr)<16)
+				{
+					strcpy(tmpbuf, tmpptr);
+					printf("Got an SMS with index %s\n", tmpbuf);
+					// More data is comming
+					gsm_getline(mbbuf,200);
+					gsm_read_sms(tmpbuf,(char *)&mbbuf,255);
+					printf(mbbuf);
+				}
+			}
+			else
+			{
+				printf("%x->%s\n",tti,mbbuf);
+			}
+		
+		}
 		//USB
 		CDC_Device_USBTask(&VirtualSerial1_CDC_Interface);
 		CDC_Device_USBTask(&VirtualSerial2_CDC_Interface);
@@ -726,23 +842,30 @@ int main (void)
 			}
 			else if (gsminit)
 			{
-				ist=gsm_init(ist);
+				ist=gsm_init();
 				if (ist==0)
+				{
 					gsminit=0;
+					printf("OK");
+				}
 			
 			}
 			//rxpoll();
 		}
 		
-		if (last_gsm!=PORTC.IN)
+		if (last_gsm!=(PORTC.IN&0xf3))
 		{
-			last_gsm=PORTC.IN;
+			last_gsm=(PORTC.IN&0xf3);
 			printf("GSM: ");
 			
 			if (last_gsm&0x01)
 				printf("RING! ");
+			else 
+				printf("ring! ");
 			if (last_gsm&0x02)
 				printf("CTS ");
+			else
+				printf("cts! ");
 			if ((last_gsm&0x40)==0)
 				printf("ON");
 			else
@@ -770,3 +893,20 @@ ISR(RTC_OVF_vect)
 }
 
 
+void rtc_alarm(uint16_t ticks)
+{
+	RTC.COMP=RTC.CNT+ticks;
+	RTC.INTFLAGS|=(RTC_COMPIF_bm); // Clear pending alarm
+}
+
+uint8_t chk_alarm(void)
+{
+	return (RTC.INTFLAGS&(RTC_COMPIF_bm));
+}
+
+void cb(void)
+{
+		CDC_Device_USBTask(&VirtualSerial1_CDC_Interface);
+		CDC_Device_USBTask(&VirtualSerial2_CDC_Interface);
+		USB_USBTask();
+}

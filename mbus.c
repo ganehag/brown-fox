@@ -74,7 +74,8 @@ uint8_t poll_and_purge(void) /* Get first byte and scrap the rest in buffer. Tim
 			}
 			pos++;
 		}
-	} while ((pos<3)&&((rtcc-rtcc_start))<2);
+	} while ((pos<3)&&((rtcc-rtcc_start)<2));
+#warning change to rtc_alarm
 	return retval;
 }
 

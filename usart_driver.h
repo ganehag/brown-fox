@@ -64,7 +64,7 @@
 /* USART buffer defines. */
 
 /* \brief  Receive buffer size: 2,4,8,16,32,64,128 or 256 bytes. */
-#define USART_RX_BUFFER_SIZE 128
+#define USART_RX_BUFFER_SIZE 256
 /* \brief Transmit buffer size: 2,4,8,16,32,64,128 or 256 bytes */
 #define USART_TX_BUFFER_SIZE 32
 /* \brief Receive buffer mask. */
