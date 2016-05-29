@@ -60,7 +60,7 @@
 
 
 # MCU name
-MCU = atxmega128a3u
+MCU = atxmega256a3u
 
 
 # Targeted chip architecture (see library "Architectures" documentation)

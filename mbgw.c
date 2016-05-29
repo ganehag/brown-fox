@@ -43,6 +43,19 @@
 #define PRECHARGE_TIME		5 // Precharge GSM powersupply 
 
 
+typedef enum
+{
+	BOOT_INIT = 0,
+	BOOT_MBID,
+	BOOT_MBVER,
+	BOOT_PRECHG=5,
+	BOOT_GSMON=7,
+	BOOT_GSMINIT=9,
+	BOOT_DONE
+} BOOT_STATE_t;
+
+BOOT_STATE_t boot_state;
+
 volatile uint8_t rtcc=0;
 
 // FIX Move to LIB header
@@ -142,18 +155,23 @@ void Boot_Jump(void)
 	/* This code is not needed for smaller devices (<128k) 
 	*  where a jmp could be done. For portabillity, this 
 	*  could always be used. Just adjust the vector:
-	* ATXmega16: 0x0020FE
+	* ATXmega16:  0x0020FE (2000+FE)
+	* ATXmega128: 0x0100FE 
+	* ATXmega256: 0x0200FE
 	* Jump to 0x041FC = BOOT_SECTION_START + 0x1FC which is
 	* the stated location of the bootloader entry (AVR1916).
 	* Note the address used is the word address = byte addr/2.
 	* My ASM fu isn't that strong, there are probably nicer
 	* ways to do this with, yennow, defined symbols .. */
 
-	asm ("ldi r30, 0xFE\n"  /* Low byte to ZL */
-	  "ldi r31, 0x20\n" /* mid byte to ZH */
-	  "ldi r24, 0x00\n" /* high byte to EIND which lives */
-	  "out 0x3c, r24\n" /* at addr 0x3c in I/O space */
-	  "eijmp":  :: "r24", "r30", "r31");
+//	asm ("ldi r30, 0x00\n"  /* Low byte to ZL */
+//	  "ldi r31, 0x00\n" /* mid byte to ZH */
+//	  "ldi r24, 0x02\n" /* high byte to EIND which lives */
+//	  "out 0x3c, r24\n" /* at addr 0x3c in I/O space */
+//	  "eijmp":  :: "r24", "r30", "r31");
+	cli();
+	CCP = 0xD8;                        // Configuration change protection: allow protected IO regiser write
+	RST.CTRL = RST_SWRST_bm;           // Request software reset by writing to protected IO register
 }
 
 
@@ -743,7 +761,7 @@ int main (void)
 			}
 		}
 		uint8_t tti;
-		if ((tti=gsm_poll(&mbbuf,200))!=0xff)
+		if ((tti=gsm_poll(&mbbuf,255))!=0xff)
 		{
 			char tmpbuf[16];
 			char *tmpptr;
@@ -757,16 +775,17 @@ int main (void)
 			}
 			else if(tti==GSM_RESP_SMS)
 			{
-				printf("Got SMS");
-				tmpptr=strtok(mbbuf,","); // Get message status;
+				printf("%s Got SMS",mbbuf);
+				tmpptr=strtok((char*)mbbuf,","); // Get message status;
 				tmpptr=strtok(NULL,","); // Get message id;
-				
+				gsm_getline((char*)&mbbuf,255);
 				if (strlen(tmpptr)<16)
 				{
 					strcpy(tmpbuf, tmpptr);
 					printf(" with index %s\n", tmpbuf);
-					gsm_read_sms(tmpbuf,&mbbuf,255);
-							printf(mbbuf);
+					gsm_read_sms(tmpbuf,(char*)&mbbuf,255);
+					printf("Del:%x",gsm_delete_sms(tmpbuf));
+
 				}
 				
 			}
@@ -779,9 +798,9 @@ int main (void)
 					strcpy(tmpbuf, tmpptr);
 					printf("Got an SMS with index %s\n", tmpbuf);
 					// More data is comming
-					gsm_getline(mbbuf,200);
+					gsm_getline(mbbuf,255);
 					gsm_read_sms(tmpbuf,(char *)&mbbuf,255);
-					printf(mbbuf);
+					printf("Del:%x",gsm_delete_sms(tmpbuf));
 				}
 			}
 			else
@@ -830,26 +849,44 @@ int main (void)
 				DS18S20_start_meas(devices[0].id);
 			}
 			
-			if (gsm_precharge)
+			if (boot_state<BOOT_DONE)
 			{
-				gsm_precharge--;
+				boot_state++;
+				printf("Boot: %d\n\r",boot_state);
 				
-				if (gsm_precharge==0)
+				if (boot_state==BOOT_MBID)
+				{
+					printf("Mbus probe:");
+					mbus_probe();
+				}
+				else if (boot_state==BOOT_MBVER)
+				{
+					printf("Mbus CFG CRC: %x\n\r", mbus_validate());
+					#warning add check to eeprom and mb_setup if needed
+				
+				}
+				else if (boot_state==BOOT_PRECHG)
 				{
 					printf("Starting main GSM VCC regulator\n");
-					gsm_vcc_enable();
+					gsm_vcc_enable();				
 				}
-			}
-			else if (gsminit)
-			{
-				ist=gsm_init();
-				if (ist==0)
+				else if (boot_state==BOOT_GSMON)
 				{
-					gsminit=0;
-					printf("OK");
+					printf("Starting GSM module\n");
+					gsm_on();
 				}
-			
+				else if (boot_state==BOOT_GSMINIT)
+				{
+					printf("Initializing GSM module\n");
+					if (gsm_init()==0)
+					{
+						gsminit=0;
+						printf("OK");
+					}
+
+				}
 			}
+			
 			//rxpoll();
 		}
 		
@@ -883,8 +920,11 @@ int main (void)
 
 ISR(TCE0_OVF_vect)
 {
-	LEDs_ToggleLEDs(LEDS_YELLOW);
-	LEDs_TurnOffLEDs(LEDS_RED|LEDS_BLUE);
+	if (boot_state<BOOT_DONE)
+	{
+		LEDs_ToggleLEDs(LEDS_YELLOW);
+	}
+		LEDs_TurnOffLEDs(LEDS_RED|LEDS_BLUE);
 }
 
 ISR(RTC_OVF_vect)

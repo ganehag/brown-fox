@@ -150,6 +150,16 @@ uint8_t gsm_send_sms(char *tlen, char *msgdata);
 			 */
 uint8_t gsm_make_ok_response(char *number, char *msgdata, uint8_t datalen);
 
+			/** Function delete SMS. 
+			 *
+			 *	\param msgidx		Index of SMS to read.
+			 *			 
+			 *
+			 *  \return GSM_OK if OK was retrieved. Unexpected characters gives GSM_PARSEERR.
+			 *   On timeout GSM_TIMEOUT is returned. 
+			 */
+uint8_t gsm_delete_sms(char *msgidx);
+
 			/** Function list sms. Only sends a command, leaving the response to the periodic (gsm_poll) function
 			 *
 			 *
@@ -199,5 +209,15 @@ uint8_t ZIP_htoi( unsigned char hex );
 			 *
 			 */
 void str_htoi(char *dest, char *scr, uint8_t len);
+
+
+			/** Function flush_gsm. Just empty buffer
+			 *
+			 *			 
+			 *  \return none
+			 *
+			 */
+void flush_gsm(void);
+
 /** @} */
 #endif

@@ -16,10 +16,10 @@ const unsigned char sendstr[] PROGMEM = "0000AA02CF25"; // OK response
 const char response_1[] PROGMEM = "+CREG:"; 	// Registered on network
 const char response_2[] PROGMEM = "^SIS";	// Internet service
 const char response_3[] PROGMEM = "+CMTI"; 	// SMS
-//const char response_4[]	PROGMEM = "+CMGR:";	// Read SMS
-const char response_4[]	PROGMEM = "^SMGR:";	// Read SMS (no read mark)
-//const char response_5[] PROGMEM = "+CMGL:"; // List SMS
-const char response_5[] PROGMEM = "^SMGL:"; // List SMS
+const char response_4[]	PROGMEM = "+CMGR:";	// Read SMS
+//const char response_4[]	PROGMEM = "^SMGR:";	// Read SMS (no read mark)
+const char response_5[] PROGMEM = "+CMGL:"; // List SMS
+//const char response_5[] PROGMEM = "^SMGL:"; // List SMS
 const char response_6[]	PROGMEM = "^SCID:";
 const char response_7[]	PROGMEM = "";	// ATI response
 
@@ -52,12 +52,12 @@ const char string_d[] PROGMEM = "AT^SISS=0,ADDRESS,\"www.hoj.nu:80\"";	//
 const char string_e[] PROGMEM = "AT+CSQ";			// Signal quality
 const char string_f[] PROGMEM = "AT^SMSO";		// Switch Off BG2-E
 
-const char string_g[] PROGMEM = "AT^SMGR=";	// read SMS, without setting read status AT^SMGR=[idx]
-//const char string_g[] PROGMEM = "AT+CMGR=";	// read SMS, AT+CMGR=[idx]
+//const char string_g[] PROGMEM = "AT^SMGR=";	// read SMS, without setting read status AT^SMGR=[idx]
+const char string_g[] PROGMEM = "AT+CMGR=";	// read SMS, AT+CMGR=[idx]
 const char string_h[] PROGMEM = "AT+CMGD=";	// delete SMS, AT+CMGD=[idx]
-//const char string_i[] PROGMEM = "AT+CMGL=4";	// list SMS
-const char string_i[] PROGMEM = "AT^SMGL";		// List SMS without setting read status
-const char string_j[] PROGMEM = "AT^SMGL";		// List SMS without setting read status
+const char string_i[] PROGMEM = "AT+CMGL=4";	// list SMS
+//const char string_i[] PROGMEM = "AT^SMGL";		// List SMS without setting read status
+const char string_j[] PROGMEM = "AT+CMGS=";		// Send SMS to network
 
 const char string_k[] PROGMEM = "AT^SISC=0"; // Close
 const char string_l[] PROGMEM = "AT^SISO=0"; // Open
@@ -116,17 +116,14 @@ uint8_t gsm_sendcmd(uint8_t cmdidx, char* addendum)
 	uint16_t adr;
 	
 	adr=(uint16_t)pgm_read_word(&(gsm_table[cmdidx]));
-//	printf("\n");
 	while ((chr=pgm_read_byte(adr++)))
 	{
 		Transmit_gsm(chr);
-//		putchar(chr);
 	} 
 	
 	while ((chr=*addendum++)!=0)
 	{
 		Transmit_gsm(chr);
-//		putchar(chr);
 	}
 		// We could compare to received echo and verify that we got exclusive access to serial line. But we don't do that check at the moment.
 
@@ -153,7 +150,10 @@ uint8_t gsm_waitok(uint8_t numeric)
 				{
 					pos=0;
 				}
-				
+				else if ((pos==0)&&((rxd==0x20)||(rxd=='\r')))
+				{
+					// Nothing. Pos will stay 0 and leading whitespace trimmed.
+				}
 				else if ((numeric)&&(pos==0))	// For numberic response, just capture the digit
 				{
 					if ((rxd>='0')&&(rxd<='9'))
@@ -185,6 +185,7 @@ uint8_t gsm_waitok(uint8_t numeric)
 				if ((pos>2)&&(rxd!='\r')) // Not done? Error!
 				{
 					retval=0xFE;
+					putchar(rxd);
 				}
 				
 			} while (rxd!='\r'); // Until end of line, which we know is in buffer
@@ -352,7 +353,6 @@ uint8_t gsm_poll(char *remainder, uint8_t rem_length)
 		} while (rxd!='\r'); // Copy all data until end of line
 	
 		remainder[strpos]=0;	// Trim end of string.
-	
 		for (uint8_t vpos=0; vpos<(sizeof(gsm_response)/sizeof(gsm_response[0])); vpos++)
 		{
 			adr=(uint16_t)pgm_read_word(&(gsm_response[vpos]));
@@ -368,7 +368,6 @@ uint8_t gsm_poll(char *remainder, uint8_t rem_length)
 					remainder[copylen]=0;
 				}
 				retval=vpos;
-//				printf("Match %d \n", vpos);
 				break;
 			}
 	
@@ -467,7 +466,6 @@ int PDU_decompress( unsigned char *compressed, unsigned char *decompressed )
     {
         //Read:
         next_c = compressed[i++];                                           //Read from in buffer in AVR_SMS_com.c
-
         //Convert:
         dec_c = 16 * ZIP_htoi( this_c ) + ZIP_htoi( next_c );               //Decimal value of the two chars
         ans_c = dec_c & mask[6 - ii];                                       //Mask out the correct bits
@@ -513,12 +511,17 @@ unsigned char* TOOLS__decodeCMGR( unsigned char* in_handle, unsigned char *sende
 	len=strlen((char *)in_handle);
 	
 	tmp_handle=in_handle;
+		
+	if ((*tmp_handle=='\n'))
+	{
+		tmp_handle++;
+	}
 
     for( i = 0; ( i < len ) && ( *tmp_handle++ != '\n' ); i++)   //Loop until we get '\n'
     {
         ;
     }
-	
+		
     for( j = 0; j < len ; j++)   //Loop until we get next '\n' and trim string
     {
         if (tmp_handle[j]=='\n')
@@ -594,22 +597,19 @@ uint8_t gsm_read_sms(char *msgidx, char *msgdata, uint8_t datalen)
 	unsigned char nbuf[16];
 	unsigned char sms[160];
 	uint8_t txlen;
-	uint8_t chr, rxd;
-	
+//	uint8_t chr, rxd;
 	gsm_sendcmd(GSM_READSMS, msgidx);
 	resp=gsm_waitresp(GSM_RESP_READSMS, msgdata, datalen);
 	
 	if(resp==0) // OK
 	{
 		msg=TOOLS__decodeCMGR((unsigned char*)msgdata, nbuf);
-//		printf(msgdata);
 		if (PDU_decompress(msg,sms))
 		{
-//			printf(nbuf);
 			if (handle_cfgsms((char *)nbuf, (char *)sms)==0) // Successful
 			{
 				txlen=gsm_make_ok_response((char *)nbuf, msgdata, datalen);
-				sprintf(sms, "%d",txlen); // Reusing sms buffer
+				sprintf((char *)sms, "%d",txlen); // Reusing sms buffer
 				gsm_send_sms((char *)sms,(char *)msgdata);
 			}
 		}
@@ -672,7 +672,7 @@ uint8_t gsm_make_ok_response(char *number, char *msgdata, uint8_t datalen)
 	{
 		msgdata[hpos++]=chra;
 	}
-	
+	msgdata[hpos++]=0x1A; // Ctrl-Z
 	msgdata[hpos]=0;
 	return (strlen(msgdata)>>1)-1;
 }
@@ -680,7 +680,7 @@ uint8_t gsm_make_ok_response(char *number, char *msgdata, uint8_t datalen)
 uint8_t gsm_send_sms(char *tlen, char *msgdata)
 {
 	uint8_t rxd=0, chr;
-	printf("Len:%s ", tlen);
+	uint8_t retval;
 	gsm_sendcmd(GSM_SENDSMS,tlen);
 	rtc_alarm(20000);
 	do 
@@ -701,7 +701,19 @@ uint8_t gsm_send_sms(char *tlen, char *msgdata)
 			//		putchar(chr);
 		}
 	}
+	retval=gsm_waitok(1);
+	return retval;
 }
+
+uint8_t gsm_delete_sms(char *msgidx)
+{
+	uint8_t retval;
+	gsm_sendcmd(GSM_DELSMS,msgidx);
+	retval=gsm_waitok(1);
+	
+	return retval;
+}
+
 
 uint8_t gsm_poll_sms(void)
 {
@@ -717,4 +729,12 @@ uint8_t gsm_getline(char *buf, uint8_t buflen)
 void gsm_off(void)
 {
 	gsm_sendcmd(GSM_OFF,0);
+}
+
+void flush_gsm(void)
+{
+	while (USART_RXBufferData_Available(&USARTBuf_gsm)) // We got CR in buffer. 	
+	{
+		USART_RXBuffer_GetByte(&USARTBuf_gsm); // read byte
+	}
 }
