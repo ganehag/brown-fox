@@ -14,14 +14,16 @@ const unsigned char sendpre[] PROGMEM = "0011000-91"; // Beginning of string
 const unsigned char sendstr[] PROGMEM = "0000AA02CF25"; // OK response
 
 const char response_1[] PROGMEM = "+CREG:"; 	// Registered on network
-const char response_2[] PROGMEM = "^SIS";	// Internet service
-const char response_3[] PROGMEM = "+CMTI"; 	// SMS
-const char response_4[]	PROGMEM = "+CMGR:";	// Read SMS
-//const char response_4[]	PROGMEM = "^SMGR:";	// Read SMS (no read mark)
-const char response_5[] PROGMEM = "+CMGL:"; // List SMS
-//const char response_5[] PROGMEM = "^SMGL:"; // List SMS
-const char response_6[]	PROGMEM = "^SCID:";
-const char response_7[]	PROGMEM = "";	// ATI response
+const char response_2[] PROGMEM = "^SISW:";	// Internet service open
+const char response_3[] PROGMEM = "CONNECT";	// Internet service open
+const char response_4[] PROGMEM = "CONNECT";	// Internet service open
+const char response_5[] PROGMEM = "+CMTI"; 	// SMS
+const char response_6[]	PROGMEM = "+CMGR:";	// Read SMS
+//const char response_6[]	PROGMEM = "^SMGR:";	// Read SMS (no read mark)
+const char response_7[] PROGMEM = "+CMGL:"; // List SMS
+//const char response_7[] PROGMEM = "^SMGL:"; // List SMS
+const char response_8[]	PROGMEM = "^SCID:";
+const char response_9[]	PROGMEM = "";	// ATI response
 
 PGM_P const gsm_response[] PROGMEM =
 {
@@ -32,6 +34,8 @@ PGM_P const gsm_response[] PROGMEM =
 	response_5,
 	response_6,	
 	response_7,
+	response_8,
+	response_9,
 };
 		
 const char string_1[] PROGMEM = "ATE0"; 		// Turn off echo
@@ -63,13 +67,13 @@ const char string_k[] PROGMEM = "AT^SISC=0"; // Close
 const char string_l[] PROGMEM = "AT^SISO=0"; // Open
 const char string_m[] PROGMEM = "AT^SIST=0"; // Transarent
 
-const char string_n[] PROGMEM = "AT^SCID"; // Transarent
+const char string_n[] PROGMEM = "AT^SCID"; // SIM ID
 
 #define GSM_ATE			0
 #define GSM_ATV			1
 #define GSM_ATI			2
 #define GSM_FIXED_INIT	3
-#define GSM_INIT_LEN	8
+#define GSM_INIT_LEN	10
 #define GSM_SET_APN		11
 #define GSM_SET_HOST 	12
 #define GSM_SIGNAL_Q	13
@@ -78,8 +82,8 @@ const char string_n[] PROGMEM = "AT^SCID"; // Transarent
 #define GSM_DELSMS		16
 #define GSM_LISTSMS		17
 #define GSM_SENDSMS		18
-#define GSM_OPENIS		19
-#define GSM_CLOSEIS		20
+#define GSM_CLOSEIS		19
+#define GSM_OPENIS		20
 #define GSM_CONNECTIS	21
 #define GSM_SIMID		22
 
@@ -119,6 +123,7 @@ uint8_t gsm_sendcmd(uint8_t cmdidx, char* addendum)
 	while ((chr=pgm_read_byte(adr++)))
 	{
 		Transmit_gsm(chr);
+//		putchar(chr);
 	} 
 	
 	while ((chr=*addendum++)!=0)
@@ -351,7 +356,6 @@ uint8_t gsm_poll(char *remainder, uint8_t rem_length)
 				remainder[strpos++]=rxd;
 			}		
 		} while (rxd!='\r'); // Copy all data until end of line
-	
 		remainder[strpos]=0;	// Trim end of string.
 		for (uint8_t vpos=0; vpos<(sizeof(gsm_response)/sizeof(gsm_response[0])); vpos++)
 		{
@@ -737,4 +741,78 @@ void flush_gsm(void)
 	{
 		USART_RXBuffer_GetByte(&USARTBuf_gsm); // read byte
 	}
+}
+
+void gsm_open_data(void)
+{
+	gsm_sendcmd(GSM_OPENIS,0);
+}
+
+void gsm_close_data(void)
+{
+	gsm_sendcmd(GSM_CLOSEIS,0);
+}
+
+void gsm_connect_data(void)
+{
+	gsm_sendcmd(GSM_CONNECTIS,0);
+}
+
+void gsm_drop_data(void)
+{
+	gsm_dtr_disable();
+	_delay_ms(100);
+	gsm_dtr_enable();
+}
+
+uint8_t gsm_data_trans(char * txbuf, uint8_t txlen, char *rxbuf, uint8_t rxlen)
+{
+	while (txlen--)
+	{
+		putchar(*txbuf);
+		Transmit_gsm(*(txbuf++));
+	}
+
+	rtc_alarm(60000); 
+/*
+	do 
+	{
+		if (USART_RXBufferData_CRInBuffer(&USARTBuf_gsm)) // We got CR in buffer. 
+		{
+			do {
+				rxd=USART_RXBuffer_GetByte(&USARTBuf_gsm); // read byte
+				if (strpos<rem_length)
+				{
+					remainder[strpos]=rxd;
+				}
+				if (rxd=='\n') // reset pos if we got multiline.
+				{
+					pos=0;
+				}
+				
+				else if (pos==0)	// Numberic response, just capture the digit after \n
+				{
+					if (rxd=='0')
+					{
+						crpos=strpos;	// The last 0 will be substututed to NULL
+					}
+					pos=2;
+				}
+				else if ((rxd=='\r')&&((strpos-1)==crpos)) // previous character was 0
+				{
+					retval=0;
+				}
+				
+				if ((pos>2)&&(rxd!='\r')) // Not done? Error!
+				{
+					retval=0xFE;
+				}
+				
+				strpos++;
+				
+			} while (USART_RXBufferData_Available(&USARTBuf_gsm)); // Until end of line, which we know is in buffer
+		}
+	} while ((chk_alarm()==0)&&(retval>=0xfe)); // Until timeout or end of line
+
+*/	
 }

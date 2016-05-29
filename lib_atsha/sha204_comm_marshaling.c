@@ -18,6 +18,14 @@
  *  \date   May 17, 2012
  */
 
+/** \ingroup ATSHA
+ *  \defgroup ATSHA Atmel ATSHA204 library
+ *  \brief Cryptograpic functions
+ *
+ *
+ *  @{
+ */
+
 #include <string.h>                    // needed for memcpy()
 
 #include "sha204_lib_return_codes.h"   // declarations of function return codes
@@ -716,3 +724,4 @@ uint8_t sha204m_write(uint8_t *tx_buffer, uint8_t *rx_buffer,
 	return sha204c_send_and_receive(&tx_buffer[0], WRITE_RSP_SIZE, &rx_buffer[0],
 				WRITE_DELAY, WRITE_EXEC_MAX - WRITE_DELAY);
 }
+/** @} */

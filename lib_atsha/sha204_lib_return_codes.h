@@ -18,6 +18,14 @@
  *  \author Atmel Crypto Products
  *  \date  September 27, 2010
  */
+ 
+/** \ingroup ATSHA
+ *  \defgroup ATSHA Atmel ATSHA204 library
+ *  \brief Cryptograpic functions
+ *
+ *
+ *  @{
+ */
 
 #ifndef SHA204_LIB_RETURN_CODES_H
 #   define SHA204_LIB_RETURN_CODES_H
@@ -46,3 +54,5 @@
 #define SHA204_TIMEOUT              ((uint8_t)  0xF1) //!< Timed out while waiting for response. Number of bytes received is 0.
 
 #endif
+
+/** @} */

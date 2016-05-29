@@ -56,6 +56,20 @@ typedef enum
 
 BOOT_STATE_t boot_state;
 
+typedef enum
+{
+	CONN_UNK = 0,
+	CONN_REG,
+	CONN_OPEN,
+	CONN_OP_PEND,
+	CONN_CONN,
+	CONN_DISC,
+	CONN_CLOSE,
+	CONN_DONE
+} CONN_STATE_t;
+
+CONN_STATE_t conn_state=0;
+
 volatile uint8_t rtcc=0;
 
 // FIX Move to LIB header
@@ -164,14 +178,11 @@ void Boot_Jump(void)
 	* My ASM fu isn't that strong, there are probably nicer
 	* ways to do this with, yennow, defined symbols .. */
 
-//	asm ("ldi r30, 0x00\n"  /* Low byte to ZL */
-//	  "ldi r31, 0x00\n" /* mid byte to ZH */
-//	  "ldi r24, 0x02\n" /* high byte to EIND which lives */
-//	  "out 0x3c, r24\n" /* at addr 0x3c in I/O space */
-//	  "eijmp":  :: "r24", "r30", "r31");
-	cli();
-	CCP = 0xD8;                        // Configuration change protection: allow protected IO regiser write
-	RST.CTRL = RST_SWRST_bm;           // Request software reset by writing to protected IO register
+	asm ("ldi r30, 0x00\n"  /* Low byte to ZL */
+	  "ldi r31, 0x00\n" /* mid byte to ZH */
+	  "ldi r24, 0x02\n" /* high byte to EIND which lives */
+	  "out 0x3c, r24\n" /* at addr 0x3c in I/O space */
+	  "eijmp":  :: "r24", "r30", "r31");
 }
 
 
@@ -403,14 +414,13 @@ int main (void)
 
 	uint8_t gsminit=0;
 	uint8_t ist=0;
-	
+		
 	rst=RST.STATUS&0x3f;
 
 	RST.STATUS|=0x3f; // Clear flags
 
 	hwv=SP_ReadFuseByte(0);
 
-	
 	wdt_Disable();
 	wdt_EnableAndSetTimeout(WATCHDOG_TIMEOUT);
 	wdt_reset();
@@ -523,9 +533,20 @@ int main (void)
 			}
 			else if (getkey=='O')
 			{
-				gsminit=1;
-				ist=0;
+				gsm_open_data();
 			}
+			else if (getkey=='C')
+			{
+				gsm_close_data();
+			}
+			else if (getkey=='T')
+			{
+				gsm_connect_data();
+			}
+			else if (getkey=='d')
+			{
+				gsm_drop_data();
+			}	
 			else if (getkey=='K')
 			{
 				uint32_t crc;
@@ -772,6 +793,7 @@ int main (void)
 			if (tti==GSM_PESP_REG)
 			{
 				printf("Registered on network, %s\n", mbbuf);
+				conn_state=CONN_REG;
 			}
 			else if(tti==GSM_RESP_SMS)
 			{
@@ -785,11 +807,8 @@ int main (void)
 					printf(" with index %s\n", tmpbuf);
 					gsm_read_sms(tmpbuf,(char*)&mbbuf,255);
 					printf("Del:%x",gsm_delete_sms(tmpbuf));
-
 				}
-				
 			}
-		
 			else if(tti==GSM_LIST_READSMS)
 			{
 				tmpptr=strtok((char *)mbbuf,","); // Get message id;
@@ -803,6 +822,19 @@ int main (void)
 					printf("Del:%x",gsm_delete_sms(tmpbuf));
 				}
 			}
+			else if(tti==GSM_RESP_ISOPN)
+			{
+				tmpptr=strtok((char *)mbbuf,",");
+				printf("A: %s", tmpptr);
+				tmpptr=strtok((char *)mbbuf,",");
+				printf("B: %s", tmpptr);
+				conn_state=CONN_OPEN;
+			}
+			else if(tti==GSM_RESP_ISTRN)
+			{
+				printf("CONN");
+				conn_state=CONN_CONN;
+			}
 			else
 			{
 				printf("%x->%s\n",tti,mbbuf);
@@ -815,6 +847,24 @@ int main (void)
 		USB_USBTask();
 		// END USB
 		wdt_reset();
+
+// Connection state machine
+// To start, set conn_dataptr and conn_respptr and call gsm_open_data()
+// This function will connect, send data, receive response and tear down connection.
+/** \todo Fix a re-connect timer. */
+		
+		if (conn_state==CONN_OPEN)
+		{
+			gsm_connect_data();
+			printf("CN");
+			conn_state=CONN_OP_PEND;
+		}
+		else if (conn_state==CONN_CONN)
+		{
+			sermux=2;
+			printf("Connection open");
+			conn_state=CONN_DISC;
+		}
 		
 		
 		// Periodic, fires @ aprox 1Hz 

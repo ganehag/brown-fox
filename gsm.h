@@ -21,14 +21,16 @@
 			/** Defines for hardware interface
 			 */
 
-#define GSM_RESP_LINE		6		/** New line response*/
+#define GSM_RESP_LINE		8		/** New line response*/
 
 #define GSM_PESP_REG		0		/** Registered to network*/
-#define GSM_RESP_IS			1
-#define GSM_RESP_SMS		2		/** New SMS response*/
-#define GSM_RESP_READSMS	3		/** Read SMS response*/
-#define GSM_LIST_READSMS	4		/** List SMS response*/
-#define GSM_RESP_SIMID		5		/** SIM-ID response*/
+#define GSM_RESP_ISOPN		1		/** Internet OPEN **/
+#define GSM_RESP_ISTRN		2		/** Internet CONNECT **/
+#define GSM_RESP_ISDISC		3		/** Internet CONNECT **/
+#define GSM_RESP_SMS		4		/** New SMS response*/
+#define GSM_RESP_READSMS	5		/** Read SMS response*/
+#define GSM_LIST_READSMS	6		/** List SMS response*/
+#define GSM_RESP_SIMID		7		/** SIM-ID response*/
 
 #define GSM_TIMEOUT			0xFF
 #define GSM_PARSEERR		0xFE
@@ -218,6 +220,54 @@ void str_htoi(char *dest, char *scr, uint8_t len);
 			 *
 			 */
 void flush_gsm(void);
+
+			/** Function gsm_open_data. Open data connectoin
+			 *
+			 *			 
+			 *  \return none
+			 *
+			 */
+void gsm_open_data(void);
+
+			/** Function gsm_close_data. Close an open data connection
+			 *
+			 *			 
+			 *  \return none
+			 *
+			 */
+void gsm_close_data(void);
+
+			/** Function gsm_connect_data. Connect serial interface to the open data interface
+			 *
+			 *			 
+			 *  \return none
+			 *
+			 */
+void gsm_connect_data(void);
+
+			/** Function gsm_drop_data. Disconnect serial interface to the open data interface
+			 *
+			 *			 
+			 *  \return none
+			 *
+			 */
+void gsm_drop_data(void);
+
+			/** Function gsm_data_trans. converts a hex-string to integer-array
+			 *
+			 *	\param txbuf		String to send.
+			 *
+			 *	\param txlen		Length of string to send 
+			 *
+			 *  \param[out] rxbuf	Buffer for receive data
+			 *
+			 *	\param rxlen		Maximum number of bytes to put in rxbuf
+			 *
+			 *			 
+			 *  \return 	Number fo bytes received or 0 if error or no data.
+			 *
+			 */
+uint8_t gsm_data_trans(char * txbuf, uint8_t txlen, char *rxbuf, uint8_t rxlen);
 
 /** @} */
 #endif
