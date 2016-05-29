@@ -1,7 +1,5 @@
 var searchData=
 [
-  ['ok',['OK',['../_a_v_r_s_m_s__com_8c.html#a7df8ed09caf9f9a94964719c7e32d4f3',1,'AVRSMS_com.c']]],
-  ['ok_5f',['OK_',['../_a_v_r_s_m_s__com_8h.html#a8b4e68f240ababf0fa846c81c1bf60e8',1,'AVRSMS_com.h']]],
   ['onewire_2ec',['onewire.c',['../onewire_8c.html',1,'']]],
   ['onewire_2eh',['onewire.h',['../onewire_8h.html',1,'']]],
   ['onewire_2eh',['onewire.h',['../_noda__libonewire_2onewire_8h.html',1,'']]],

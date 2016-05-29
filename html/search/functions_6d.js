@@ -1,7 +1,6 @@
 var searchData=
 [
-  ['main',['main',['../main_8c.html#ad439e06a65b40b9442cc51c06bcc379d',1,'main(void):&#160;main.c'],['../sha204__example__main_8c.html#a840291bc02cba5474a4cb46a9b9566fe',1,'main(void):&#160;sha204_example_main.c']]],
-  ['main_5finit',['MAIN_init',['../main_8c.html#a64f632c6d0f6cb4ef2399669c8bd81d2',1,'main.c']]],
+  ['main',['main',['../sha204__example__main_8c.html#a840291bc02cba5474a4cb46a9b9566fe',1,'sha204_example_main.c']]],
   ['mbus_5fconfigmode',['mbus_configmode',['../group___m_b_u_s_s_w.html#ga9156f00554834622268cdfd4952689be',1,'mbus_configmode(uint8_t config):&#160;mbrc1180.c'],['../group___m_b_u_s_s_w.html#ga9156f00554834622268cdfd4952689be',1,'mbus_configmode(uint8_t config):&#160;mbrc1180.c']]],
   ['mbus_5fenter_5fconfig',['mbus_enter_config',['../group___m_b_u_s_h_w.html#ga5cace90eb19b5f07a7e3e4db288ae760',1,'mbus_enter_config(void):&#160;mbus.c'],['../group___m_b_u_s_h_w.html#ga5cace90eb19b5f07a7e3e4db288ae760',1,'mbus_enter_config(void):&#160;mbus.c']]],
   ['mbus_5fget_5fpackage',['mbus_get_package',['../group___m_b_u_s_h_w.html#ga50aa75fc99cfa80d9a1e0bb32dd93053',1,'mbus_get_package(uint8_t *buf):&#160;mbus.c'],['../group___m_b_u_s_h_w.html#ga50aa75fc99cfa80d9a1e0bb32dd93053',1,'mbus_get_package(uint8_t *buf):&#160;mbus.c']]],

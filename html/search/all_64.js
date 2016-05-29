@@ -28,5 +28,6 @@ var searchData=
   ['devrev_5fparam1_5fidx',['DEVREV_PARAM1_IDX',['../sha204__comm__marshaling_8h.html#a2aed3493e22458a3fc6897ee9f52c823',1,'sha204_comm_marshaling.h']]],
   ['devrev_5fparam2_5fidx',['DEVREV_PARAM2_IDX',['../sha204__comm__marshaling_8h.html#a8c1e9a7d10eb2b8e5728348dc96a543a',1,'sha204_comm_marshaling.h']]],
   ['devrev_5frsp_5fsize',['DEVREV_RSP_SIZE',['../sha204__comm__marshaling_8h.html#acf2f934b9a1d9e1fe01871f46dd5fc3c',1,'sha204_comm_marshaling.h']]],
-  ['dualvirtualserial_2eh',['DualVirtualSerial.h',['../_dual_virtual_serial_8h.html',1,'']]]
+  ['dualvirtualserial_2eh',['DualVirtualSerial.h',['../_dual_virtual_serial_8h.html',1,'']]],
+  ['datablad',['Datablad',['../index.html',1,'']]]
 ];

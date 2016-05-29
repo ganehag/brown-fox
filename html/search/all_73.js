@@ -1,8 +1,6 @@
 var searchData=
 [
   ['searchbuses',['SearchBuses',['../group___o_w.html#ga8dff47ba947f686281a8c1c276a538af',1,'SearchBuses(OWI_device *devices, unsigned char len):&#160;onewire.c'],['../group___o_w.html#ga8dff47ba947f686281a8c1c276a538af',1,'SearchBuses(OWI_device *devices, unsigned char len):&#160;onewire.c'],['../group___o_w.html#ga8dff47ba947f686281a8c1c276a538af',1,'SearchBuses(OWI_device *devices, unsigned char len):&#160;onewire.c']]],
-  ['searchfor',['searchFor',['../_a_v_r_s_m_s__com_8c.html#acbaebeb104bc05684059b4599823ac1e',1,'AVRSMS_com.c']]],
-  ['searchstrings',['searchStrings',['../_a_v_r_s_m_s__com_8c.html#ad0faf9b02055108954759b00227f8b42',1,'AVRSMS_com.c']]],
   ['sha204_5faddress_5fmask',['SHA204_ADDRESS_MASK',['../sha204__comm__marshaling_8h.html#ac5135fb4394cd2dfe7339c2c243bc1ee',1,'sha204_comm_marshaling.h']]],
   ['sha204_5faddress_5fmask_5fconfig',['SHA204_ADDRESS_MASK_CONFIG',['../sha204__comm__marshaling_8h.html#a08fcde83022c9eac23d2a968697b7942',1,'sha204_comm_marshaling.h']]],
   ['sha204_5faddress_5fmask_5fotp',['SHA204_ADDRESS_MASK_OTP',['../sha204__comm__marshaling_8h.html#aed17cc3a84d38fd7f8a95d8aecae3b62',1,'sha204_comm_marshaling.h']]],
@@ -123,7 +121,6 @@ var searchData=
   ['spdriver_2eh',['spdriver.h',['../spdriver_8h.html',1,'']]],
   ['spi_2ec',['spi.c',['../spi_8c.html',1,'']]],
   ['spi_5fmastertransceivebyte',['SPI_MasterTransceiveByte',['../spi_8c.html#aeeff1124feeff8931a51b1a7e2bc6cc4',1,'spi.c']]],
-  ['splint_2eh',['splint.h',['../splint_8h.html',1,'']]],
   ['str_5fhtoi',['str_htoi',['../group___g_s_m_s_w.html#ga282696da7234a86180bb8da15ce25137',1,'str_htoi(char *dest, char *src, uint8_t len):&#160;gsm.c'],['../group___g_s_m_s_w.html#ga282696da7234a86180bb8da15ce25137',1,'str_htoi(char *dest, char *scr, uint8_t len):&#160;gsm.c']]],
   ['string_5fid_5flanguage',['STRING_ID_Language',['../_descriptors_8h.html#a21cbe47ab5f841fd15ee59d8017936d8a43c26110f583bb49be4f8ae366dd7e92',1,'Descriptors.h']]],
   ['string_5fid_5fmanufacturer',['STRING_ID_Manufacturer',['../_descriptors_8h.html#a21cbe47ab5f841fd15ee59d8017936d8a651601e2a5c0024a03f17deb9cba5fd6',1,'Descriptors.h']]],

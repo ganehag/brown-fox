@@ -21,8 +21,6 @@ var searchData=
   ['checkmac_5fmode_5fmask',['CHECKMAC_MODE_MASK',['../sha204__comm__marshaling_8h.html#a67e74cb132024711cf064ff98021d71f',1,'sha204_comm_marshaling.h']]],
   ['checkmac_5fother_5fdata_5fsize',['CHECKMAC_OTHER_DATA_SIZE',['../sha204__comm__marshaling_8h.html#a7c365741639a5c7dc29267a130e8d827',1,'sha204_comm_marshaling.h']]],
   ['checkmac_5frsp_5fsize',['CHECKMAC_RSP_SIZE',['../sha204__comm__marshaling_8h.html#aa44ecaa440ab845d5939333171476adf',1,'sha204_comm_marshaling.h']]],
-  ['cmti_5f',['CMTI_',['../_a_v_r_s_m_s__com_8h.html#aabfabb8192020c2f035df28d9f68ccf3',1,'AVRSMS_com.h']]],
   ['cpu_5fclock_5fdeviation_5fnegative',['CPU_CLOCK_DEVIATION_NEGATIVE',['../sha204__config_8h.html#a362a3adb28bde48b08e10f57fe5ddf84',1,'sha204_config.h']]],
-  ['cpu_5fclock_5fdeviation_5fpositive',['CPU_CLOCK_DEVIATION_POSITIVE',['../sha204__config_8h.html#a6d630b1ea360f649d292fbd63a3cf725',1,'sha204_config.h']]],
-  ['crlf_5f',['CRLF_',['../_a_v_r_s_m_s__com_8h.html#a27a6b58f9a41dd261c77ebf6e6c8d362',1,'AVRSMS_com.h']]]
+  ['cpu_5fclock_5fdeviation_5fpositive',['CPU_CLOCK_DEVIATION_POSITIVE',['../sha204__config_8h.html#a6d630b1ea360f649d292fbd63a3cf725',1,'sha204_config.h']]]
 ];

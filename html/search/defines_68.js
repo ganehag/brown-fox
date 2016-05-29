@@ -1,6 +1,5 @@
 var searchData=
 [
-  ['hex_5fnmbr',['hex_nmbr',['../_a_v_r_s_m_s__zip_8h.html#a3e5bab2857d243a9094074ef0624df08',1,'AVRSMS_zip.h']]],
   ['hmac_5fcount',['HMAC_COUNT',['../sha204__comm__marshaling_8h.html#a041d4cd845319ea0a693a1c4008b2a06',1,'sha204_comm_marshaling.h']]],
   ['hmac_5fdelay',['HMAC_DELAY',['../sha204__comm__marshaling_8h.html#aed6f28974aa091d95112ac0a9ec747d7',1,'sha204_comm_marshaling.h']]],
   ['hmac_5fexec_5fmax',['HMAC_EXEC_MAX',['../sha204__comm__marshaling_8h.html#afa9b4904f66e66a162e74251a163c4b8',1,'sha204_comm_marshaling.h']]],

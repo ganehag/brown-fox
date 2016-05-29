@@ -14,15 +14,7 @@ var searchData=
   ['read_5fcount',['READ_COUNT',['../sha204__comm__marshaling_8h.html#ad222baf9301d2d35a5c928a0d91c4335',1,'sha204_comm_marshaling.h']]],
   ['read_5fdelay',['READ_DELAY',['../sha204__comm__marshaling_8h.html#a9718811a51e9aca0b2cef22ca84435cc',1,'sha204_comm_marshaling.h']]],
   ['read_5fexec_5fmax',['READ_EXEC_MAX',['../sha204__comm__marshaling_8h.html#a66d87678c234dabf4562759483e23be7',1,'sha204_comm_marshaling.h']]],
-  ['read_5findex',['read_index',['../main_8c.html#a15c9d1e29f0b207d477118f282d8945b',1,'main.c']]],
   ['read_5fzone_5fidx',['READ_ZONE_IDX',['../sha204__comm__marshaling_8h.html#ae273cfc99b8538b3c81ba8240a6ff425',1,'sha204_comm_marshaling.h']]],
   ['read_5fzone_5fmask',['READ_ZONE_MASK',['../sha204__comm__marshaling_8h.html#acf9c81ae1249f3c174ec75cf65517176',1,'sha204_comm_marshaling.h']]],
-  ['read_5fzone_5fmode_5f32_5fbytes',['READ_ZONE_MODE_32_BYTES',['../sha204__comm__marshaling_8h.html#a865936142c95f9e9121325a370ed5dfb',1,'sha204_comm_marshaling.h']]],
-  ['ready',['READY',['../_a_v_r_s_m_s__com_8c.html#a720ba79cdd9fba23b068d353934fb23f',1,'AVRSMS_com.c']]],
-  ['ready_5f',['READY_',['../_a_v_r_s_m_s__com_8h.html#a2aeeed99c7ccb50a54d0f39735535192',1,'AVRSMS_com.h']]],
-  ['rx_5fack',['rx_ack',['../_a_v_r_s_m_s__api_8c.html#aaf837798006b2274f019e50dd799c0c4',1,'rx_ack():&#160;AVRSMS_com.c'],['../_a_v_r_s_m_s__com_8c.html#aaf837798006b2274f019e50dd799c0c4',1,'rx_ack():&#160;AVRSMS_com.c'],['../main_8c.html#aaf837798006b2274f019e50dd799c0c4',1,'rx_ack():&#160;AVRSMS_com.c']]],
-  ['rx_5fbuffer_5fmask',['RX_BUFFER_MASK',['../_a_v_r_s_m_s__com_8h.html#a2d550d3221612240ed88b280ca1ac25c',1,'AVRSMS_com.h']]],
-  ['rx_5fbuffer_5fsize',['RX_BUFFER_SIZE',['../_a_v_r_s_m_s__com_8h.html#a739a2a1a0047c98ac1b18ecd25dac092',1,'AVRSMS_com.h']]],
-  ['rx_5foverflow',['rx_overflow',['../_a_v_r_s_m_s__com_8c.html#adcdc6aedb2debec006657be43ac18e6d',1,'AVRSMS_com.c']]],
-  ['rx_5fwait',['RX_WAIT',['../_a_v_r_s_m_s__com_8h.html#a2b2fcfd54f428237d20020cc37fdf688',1,'AVRSMS_com.h']]]
+  ['read_5fzone_5fmode_5f32_5fbytes',['READ_ZONE_MODE_32_BYTES',['../sha204__comm__marshaling_8h.html#a865936142c95f9e9121325a370ed5dfb',1,'sha204_comm_marshaling.h']]]
 ];

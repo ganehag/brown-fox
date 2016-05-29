@@ -62,8 +62,6 @@ var searchData=
   ['time_5futils_5fus_5fcalibration',['TIME_UTILS_US_CALIBRATION',['../timer__utilities_8c.html#ad2bb2a8cf61677d13dff952462741a40',1,'timer_utilities.c']]],
   ['timer_5futilities_2ec',['timer_utilities.c',['../timer__utilities_8c.html',1,'']]],
   ['todo_20list',['Todo List',['../todo.html',1,'']]],
-  ['tools_5f_5fdecodecmgr',['TOOLS__decodeCMGR',['../_a_v_r_s_m_s__tools_8c.html#a7d3ba1679fa1bb8fb56759539587bd6b',1,'TOOLS__decodeCMGR(int index):&#160;AVRSMS_tools.c'],['../_a_v_r_s_m_s__tools_8h.html#a7d3ba1679fa1bb8fb56759539587bd6b',1,'TOOLS__decodeCMGR(int index):&#160;AVRSMS_tools.c']]],
-  ['tools_5fdecodecmti',['TOOLS_decodeCMTI',['../_a_v_r_s_m_s__tools_8c.html#af8b513a2a312e6199602f7969423c474',1,'TOOLS_decodeCMTI(void):&#160;AVRSMS_tools.c'],['../_a_v_r_s_m_s__tools_8h.html#af8b513a2a312e6199602f7969423c474',1,'TOOLS_decodeCMTI(void):&#160;AVRSMS_tools.c']]],
   ['twi_5fbaud',['TWI_BAUD',['../twi__master_8h.html#acfa0a416c2f8814b83c80e4e00719f0d',1,'twi_master.h']]],
   ['twi_5fbytesread',['twi_bytesRead',['../twi__master_8h.html#ad26a9f12ebb9d755b4ea5f39735b3238',1,'twi_master.h']]],
   ['twi_5fbytestoread',['twi_bytesToRead',['../twi__master_8h.html#a6350d1218dde3de197c359e31904e0fe',1,'twi_master.h']]],

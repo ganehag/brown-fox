@@ -8,7 +8,6 @@ var searchData=
   ['update_5fmode_5fidx',['UPDATE_MODE_IDX',['../sha204__comm__marshaling_8h.html#abec02770ab378eea5c604269dc8c024a',1,'sha204_comm_marshaling.h']]],
   ['update_5frsp_5fsize',['UPDATE_RSP_SIZE',['../sha204__comm__marshaling_8h.html#aabf82974c18252bcd0c48ee99af75dfb',1,'sha204_comm_marshaling.h']]],
   ['update_5fvalue_5fidx',['UPDATE_VALUE_IDX',['../sha204__comm__marshaling_8h.html#a0aacda6ef1cf79b10b3a2a7e2e9d8799',1,'sha204_comm_marshaling.h']]],
-  ['usart0_5frx_5finterrupt',['USART0_RX_interrupt',['../_a_v_r_s_m_s__com_8c.html#a7aa79222069543962d5274bdd5d3a4dd',1,'AVRSMS_com.c']]],
   ['usart_5fand_5fbuffer',['Usart_and_buffer',['../struct_usart__and__buffer.html',1,'']]],
   ['usart_5fbaudrate_5fset',['USART_Baudrate_Set',['../usart__driver_8h.html#aa3579b0bb442accdc655f578ba2b98a6',1,'usart_driver.h']]],
   ['usart_5fbuffer',['USART_Buffer',['../struct_u_s_a_r_t___buffer.html',1,'']]],

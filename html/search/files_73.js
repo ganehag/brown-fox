@@ -10,6 +10,5 @@ var searchData=
   ['sha204_5flib_5freturn_5fcodes_2eh',['sha204_lib_return_codes.h',['../sha204__lib__return__codes_8h.html',1,'']]],
   ['sha204_5fphysical_2eh',['sha204_physical.h',['../sha204__physical_8h.html',1,'']]],
   ['spdriver_2eh',['spdriver.h',['../spdriver_8h.html',1,'']]],
-  ['spi_2ec',['spi.c',['../spi_8c.html',1,'']]],
-  ['splint_2eh',['splint.h',['../splint_8h.html',1,'']]]
+  ['spi_2ec',['spi.c',['../spi_8c.html',1,'']]]
 ];

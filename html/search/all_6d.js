@@ -17,11 +17,8 @@ var searchData=
   ['mac_5fmode_5fpassthrough',['MAC_MODE_PASSTHROUGH',['../sha204__comm__marshaling_8h.html#a41beaf29ad684f5fae6046c689d6bcf1',1,'sha204_comm_marshaling.h']]],
   ['mac_5fmode_5fsource_5fflag_5fmatch',['MAC_MODE_SOURCE_FLAG_MATCH',['../sha204__comm__marshaling_8h.html#adffd78899cf3d3dd18afc5ce3c54acb4',1,'sha204_comm_marshaling.h']]],
   ['mac_5frsp_5fsize',['MAC_RSP_SIZE',['../sha204__comm__marshaling_8h.html#a1e34a5e5e8b86355569f958ecbaff3d4',1,'sha204_comm_marshaling.h']]],
-  ['main',['main',['../main_8c.html#ad439e06a65b40b9442cc51c06bcc379d',1,'main(void):&#160;main.c'],['../sha204__example__main_8c.html#a840291bc02cba5474a4cb46a9b9566fe',1,'main(void):&#160;sha204_example_main.c']]],
-  ['main_2ec',['main.c',['../main_8c.html',1,'']]],
-  ['main_5finit',['MAIN_init',['../main_8c.html#a64f632c6d0f6cb4ef2399669c8bd81d2',1,'main.c']]],
+  ['main',['main',['../sha204__example__main_8c.html#a840291bc02cba5474a4cb46a9b9566fe',1,'sha204_example_main.c']]],
   ['manufacturerstring',['ManufacturerString',['../_descriptors_8c.html#a84557c5ab5d188d8d7cfdbfe6de20f02',1,'Descriptors.c']]],
-  ['mask',['mask',['../_a_v_r_s_m_s__zip_8c.html#abfdb5b9d00e32a9f07ae932f2cf153d5',1,'AVRSMS_zip.c']]],
   ['mb_5fconf',['MB_CONF',['../group___e_e_p_r_o_m.html#ga29a14055462b86f6b8d7ce828fd1904d',1,'MB_CONF():&#160;eeprom.c'],['../group___e_e_p_r_o_m.html#ga29a14055462b86f6b8d7ce828fd1904d',1,'MB_CONF():&#160;eeprom.c']]],
   ['mbdone',['MBDONE',['../group___m_b_u_s_h_w.html#gae7fa0a900d2552a298b3b6e6a190f9ec',1,'mbus.h']]],
   ['mberr_5fsync',['MBERR_SYNC',['../group___m_b_u_s_h_w.html#ga990abcf861967afee6ca8568e829445c',1,'mbus.h']]],
@@ -42,8 +39,5 @@ var searchData=
   ['mbusres_5fpin',['MBUSRES_PIN',['../group___m_b_u_s_s_w.html#ga651e5a51bbd8848a267d51b07f0d3f46',1,'mbrc1180.h']]],
   ['mbus_20module_20low_2dlevel_20interface',['MBus module low-level interface',['../group___m_b_u_s_s_w.html',1,'']]],
   ['mbwait',['MBWAIT',['../group___m_b_u_s_h_w.html#gad52f9659b03eceb004fa46b5a1d817e5',1,'mbus.h']]],
-  ['message_5fencoded_5fsize',['MESSAGE_ENCODED_SIZE',['../_a_v_r_s_m_s__zip_8h.html#aa2206dec612d4dc25b183cbef1800541',1,'AVRSMS_zip.h']]],
-  ['message_5flength',['MESSAGE_LENGTH',['../_a_v_r_s_m_s__zip_8h.html#ac146c3c7afc6f342ae4f476bd46d924a',1,'AVRSMS_zip.h']]],
-  ['msgbuff',['msgbuff',['../_a_v_r_s_m_s__api_8c.html#a9b30339eae25dff33277a88820587822',1,'AVRSMS_api.c']]],
   ['msghnd_2eh',['msghnd.h',['../msghnd_8h.html',1,'']]]
 ];

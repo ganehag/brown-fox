@@ -1,6 +1,5 @@
 var searchData=
 [
-  ['ok_5f',['OK_',['../_a_v_r_s_m_s__com_8h.html#a8b4e68f240ababf0fa846c81c1bf60e8',1,'AVRSMS_com.h']]],
   ['owi_5fcrc_5ferror',['OWI_CRC_ERROR',['../_noda__libonewire_2onewire_8h.html#a70e3db9f4a706c6788d15e1273dd6f1b',1,'OWI_CRC_ERROR():&#160;onewire.h'],['../onewire_8h.html#a70e3db9f4a706c6788d15e1273dd6f1b',1,'OWI_CRC_ERROR():&#160;onewire.h']]],
   ['owi_5fcrc_5fok',['OWI_CRC_OK',['../_noda__libonewire_2onewire_8h.html#a2610985bfd93c8267e21ab9ce000e4ae',1,'OWI_CRC_OK():&#160;onewire.h'],['../onewire_8h.html#a2610985bfd93c8267e21ab9ce000e4ae',1,'OWI_CRC_OK():&#160;onewire.h']]],
   ['owi_5from_5fmatch',['OWI_ROM_MATCH',['../_o_w_idefs_8h.html#aca11e444ee5e1970b103a1fd0da8b4cc',1,'OWIdefs.h']]],

@@ -16,7 +16,5 @@ var searchData=
   ['mac_5fmode_5fmask',['MAC_MODE_MASK',['../sha204__comm__marshaling_8h.html#a6e6b931cf58debb1a23b87c16c7b4d47',1,'sha204_comm_marshaling.h']]],
   ['mac_5fmode_5fpassthrough',['MAC_MODE_PASSTHROUGH',['../sha204__comm__marshaling_8h.html#a41beaf29ad684f5fae6046c689d6bcf1',1,'sha204_comm_marshaling.h']]],
   ['mac_5fmode_5fsource_5fflag_5fmatch',['MAC_MODE_SOURCE_FLAG_MATCH',['../sha204__comm__marshaling_8h.html#adffd78899cf3d3dd18afc5ce3c54acb4',1,'sha204_comm_marshaling.h']]],
-  ['mac_5frsp_5fsize',['MAC_RSP_SIZE',['../sha204__comm__marshaling_8h.html#a1e34a5e5e8b86355569f958ecbaff3d4',1,'sha204_comm_marshaling.h']]],
-  ['message_5fencoded_5fsize',['MESSAGE_ENCODED_SIZE',['../_a_v_r_s_m_s__zip_8h.html#aa2206dec612d4dc25b183cbef1800541',1,'AVRSMS_zip.h']]],
-  ['message_5flength',['MESSAGE_LENGTH',['../_a_v_r_s_m_s__zip_8h.html#ac146c3c7afc6f342ae4f476bd46d924a',1,'AVRSMS_zip.h']]]
+  ['mac_5frsp_5fsize',['MAC_RSP_SIZE',['../sha204__comm__marshaling_8h.html#a1e34a5e5e8b86355569f958ecbaff3d4',1,'sha204_comm_marshaling.h']]]
 ];

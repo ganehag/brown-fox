@@ -13,6 +13,7 @@ var searchData=
   ['gendig_5fzone_5fidx',['GENDIG_ZONE_IDX',['../sha204__comm__marshaling_8h.html#ab79b57111a49362bd51922813cb84355',1,'sha204_comm_marshaling.h']]],
   ['gendig_5fzone_5fotp',['GENDIG_ZONE_OTP',['../sha204__comm__marshaling_8h.html#aee95b219cf932dfedb3a3c5e23d01a9d',1,'sha204_comm_marshaling.h']]],
   ['gsm_2eh',['gsm.h',['../gsm_8h.html',1,'']]],
+  ['gsm_5fdelete_5fsms',['gsm_delete_sms',['../group___g_s_m_s_w.html#ga879c7bc20f86f6d09a80590ffe9d3383',1,'gsm_delete_sms(char *msgidx):&#160;gsm.c'],['../group___g_s_m_s_w.html#ga879c7bc20f86f6d09a80590ffe9d3383',1,'gsm_delete_sms(char *msgidx):&#160;gsm.c']]],
   ['gsm_5fdtr_5fdisable',['gsm_dtr_disable',['../group___g_s_m_l_l_s_w.html#gab8b7226491197ac1f5f3863574ed1b7a',1,'gsmbg2.h']]],
   ['gsm_5fdtr_5fenable',['gsm_dtr_enable',['../group___g_s_m_l_l_s_w.html#gaa689250433b7dad3034287d7f481e0a8',1,'gsmbg2.h']]],
   ['gsm_5fgetline',['gsm_getline',['../group___g_s_m_s_w.html#ga063206cacdf6b2899c0e8afe6ce74d36',1,'gsm_getline(char *buf, uint8_t buflen):&#160;gsm.c'],['../group___g_s_m_s_w.html#ga063206cacdf6b2899c0e8afe6ce74d36',1,'gsm_getline(char *buf, uint8_t buflen):&#160;gsm.c']]],
