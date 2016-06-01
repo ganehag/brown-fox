@@ -21,7 +21,7 @@
 			/** Defines for hardware interface
 			 */
 
-#define GSM_RESP_LINE		8		/** New line response*/
+#define GSM_RESP_LINE		9		/** New line response*/
 
 #define GSM_PESP_REG		0		/** Registered to network*/
 #define GSM_RESP_ISOPN		1		/** Internet OPEN **/
@@ -31,7 +31,7 @@
 #define GSM_RESP_READSMS	5		/** Read SMS response*/
 #define GSM_LIST_READSMS	6		/** List SMS response*/
 #define GSM_RESP_SIMID		7		/** SIM-ID response*/
-
+#define GSM_HTTP_RESULT		8		/** HTTP Response */
 #define GSM_TIMEOUT			0xFF
 #define GSM_PARSEERR		0xFE
 #define GSM_OK				0x00
@@ -258,6 +258,13 @@ void gsm_drop_data(void);
 			 *	\param txbuf		String to send.
 			 *
 			 *	\param txlen		Length of string to send 
+			 *			 
+			 *  \return 	None.
+			 *
+			 */
+void gsm_data_trans(char * txbuf, uint8_t txlen);
+
+			/** Function gsm_data_trans. converts a hex-string to integer-array
 			 *
 			 *  \param[out] rxbuf	Buffer for receive data
 			 *
@@ -267,7 +274,6 @@ void gsm_drop_data(void);
 			 *  \return 	Number fo bytes received or 0 if error or no data.
 			 *
 			 */
-uint8_t gsm_data_trans(char * txbuf, uint8_t txlen, char *rxbuf, uint8_t rxlen);
-
+uint8_t gsm_data_recv(char *rxbuf, uint8_t rxlen);
 /** @} */
 #endif

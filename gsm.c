@@ -23,7 +23,8 @@ const char response_6[]	PROGMEM = "+CMGR:";	// Read SMS
 const char response_7[] PROGMEM = "+CMGL:"; // List SMS
 //const char response_7[] PROGMEM = "^SMGL:"; // List SMS
 const char response_8[]	PROGMEM = "^SCID:";
-const char response_9[]	PROGMEM = "";	// ATI response
+const char response_9[]	PROGMEM = "HTTP/1.1";
+const char response_a[]	PROGMEM = "";	// ATI response
 
 PGM_P const gsm_response[] PROGMEM =
 {
@@ -36,6 +37,7 @@ PGM_P const gsm_response[] PROGMEM =
 	response_7,
 	response_8,
 	response_9,
+	response_a,
 };
 		
 const char string_1[] PROGMEM = "ATE0"; 		// Turn off echo
@@ -331,7 +333,6 @@ uint8_t gsm_init(void)
 		retval+=gsm_waitok(1);
 		_delay_ms(100);
 		wdt_reset();
-		
 	}
 	return retval;
 }
@@ -765,14 +766,17 @@ void gsm_drop_data(void)
 	gsm_dtr_enable();
 }
 
-uint8_t gsm_data_trans(char * txbuf, uint8_t txlen, char *rxbuf, uint8_t rxlen)
+void gsm_data_trans(char * txbuf, uint8_t txlen)
 {
 	while (txlen--)
 	{
 		putchar(*txbuf);
-		Transmit_gsm(*(txbuf++));
+		while(Transmit_gsm(*(txbuf++))==0);
 	}
+}
 
+uint8_t gsm_data_recv( char *rxbuf, uint8_t rxlen)
+{
 	rtc_alarm(60000); 
 /*
 	do 

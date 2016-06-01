@@ -129,7 +129,7 @@ SRC = $(TARGET).c                                              	\
 	  Descriptors.c	eeprom.c											\
 	  nvm.c	rf22.c msghnd.c												\
 	  tc_driver.c usart_driver.c uart.c\
-	  gsmbg2.c gsm.c ds18s20.c mbrc1180.c mbus.c\
+	  gsmbg2.c gsm.c ds18s20.c mbrc1180.c mbus.c httpdata.c\
 	  lib_atsha/sha204_i2c.c lib_atsha/sha204_comm.c lib_atsha/sha204_comm_marshaling.c\
 	  $(LUFA_SRC_USB)                                             \
 	  $(LUFA_SRC_USBCLASS) \

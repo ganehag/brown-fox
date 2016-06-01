@@ -298,7 +298,6 @@ void USART_DataRegEmpty(USART_data_t * usart_data)
 		/* Start transmitting. */
 		uint8_t data = bufPtr->TX[usart_data->buffer.TX_Tail];
 		usart_data->usart->DATA = data;
-
 		/* Advance buffer tail. */
 		bufPtr->TX_Tail = (bufPtr->TX_Tail + 1) & USART_TX_BUFFER_MASK;
 	}

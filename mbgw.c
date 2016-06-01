@@ -25,6 +25,7 @@
 #include "gdefs.h"
 #include "gsm.h"
 #include "msghnd.h"
+#include "httpdata.h"
 
 #define SHA204_COMMAND_FUNCTIONS
 
@@ -48,8 +49,8 @@ typedef enum
 	BOOT_INIT = 0,
 	BOOT_MBID,
 	BOOT_MBVER,
-	BOOT_PRECHG=5,
-	BOOT_GSMON=7,
+	BOOT_PRECHG=5,	
+	BOOT_GSMON=7,		// Dont turn on to early! Voltage regulator needs a few seconds to stablize.
 	BOOT_GSMINIT=9,
 	BOOT_DONE
 } BOOT_STATE_t;
@@ -58,14 +59,13 @@ BOOT_STATE_t boot_state;
 
 typedef enum
 {
-	CONN_UNK = 0,
+	CONN_DOWN = 0,
 	CONN_REG,
 	CONN_OPEN,
 	CONN_OP_PEND,
 	CONN_CONN,
+	CONN_UP,
 	CONN_DISC,
-	CONN_CLOSE,
-	CONN_DONE
 } CONN_STATE_t;
 
 CONN_STATE_t conn_state=0;
@@ -405,15 +405,15 @@ int main (void)
 
 	uint8_t sermux=0;
 	
-	uint8_t gsm_precharge=PRECHARGE_TIME;
+//	uint8_t gsm_precharge=PRECHARGE_TIME;
+
+	uint8_t connection_timer;
 	uint8_t last_gsm=0;
 	
 	static OWI_device devices[MAX_DEVICES];
 	uint8_t mbbuf[256];
+	uint8_t shortbuf[32];
 	uint8_t items;
-
-	uint8_t gsminit=0;
-	uint8_t ist=0;
 		
 	rst=RST.STATUS&0x3f;
 
@@ -533,6 +533,7 @@ int main (void)
 			}
 			else if (getkey=='O')
 			{
+				flush_gsm();
 				gsm_open_data();
 			}
 			else if (getkey=='C')
@@ -631,6 +632,8 @@ int main (void)
 			else if (getkey=='y')
 			{
 				//gsm_make_ok_response(&mbbuf, 255);
+				strcpy(mbbuf,"{\"id\": \"9753\", \"boot\":12345}");
+				httpsend("www.hoj.nu", mbbuf);
 			}
 			else if (getkey=='m')
 			{
@@ -682,7 +685,7 @@ int main (void)
 			}
 			else
 			{
-				printf("Commands: [m] select 2nd seral endpoint. [o] Start GSM. [V/v] Set/Clr Mbus config pin. [I] test ATSHA204\n");
+				printf("Commands: [m] select 2nd seral endpoint. [O] Initiate data transfer. [I] test ATSHA204\n");
 			}
 
 		}
@@ -782,25 +785,38 @@ int main (void)
 			}
 		}
 		uint8_t tti;
-		if ((tti=gsm_poll(&mbbuf,255))!=0xff)
+		if ((tti=gsm_poll(&shortbuf,32))!=0xff)
 		{
 			char tmpbuf[16];
 			char *tmpptr;
-	//		char *tmpline;
 			
+	/*** Notice! Buffer changed to smaller one. Test again!
+	*/
 
 		
 			if (tti==GSM_PESP_REG)
 			{
-				printf("Registered on network, %s\n", mbbuf);
-				conn_state=CONN_REG;
+				tmpptr=strtok((char*)shortbuf," ,"); // Get message status;
+				if (tmpptr[0]=='1')
+				{
+					printf("Registered on network");
+					conn_state=CONN_REG;
+					tmpptr=strtok(NULL,"\r"); // Get message id;
+					printf("Cell: %s", tmpptr);
+				}
+				else
+				{
+					printf("NOT registered on network");
+					conn_state=CONN_DISC;
+				}
+				
 			}
 			else if(tti==GSM_RESP_SMS)
 			{
-				printf("%s Got SMS",mbbuf);
-				tmpptr=strtok((char*)mbbuf,","); // Get message status;
+				printf("%s Got SMS",shortbuf);
+				tmpptr=strtok((char*)shortbuf,","); // Get message status;
 				tmpptr=strtok(NULL,","); // Get message id;
-				gsm_getline((char*)&mbbuf,255);
+				gsm_getline((char*)&shortbuf,32);
 				if (strlen(tmpptr)<16)
 				{
 					strcpy(tmpbuf, tmpptr);
@@ -811,33 +827,51 @@ int main (void)
 			}
 			else if(tti==GSM_LIST_READSMS)
 			{
-				tmpptr=strtok((char *)mbbuf,","); // Get message id;
+				tmpptr=strtok((char *)shortbuf,","); // Get message id;
 				if (strlen(tmpptr)<16)
 				{
 					strcpy(tmpbuf, tmpptr);
 					printf("Got an SMS with index %s\n", tmpbuf);
 					// More data is comming
-					gsm_getline(mbbuf,255);
+					gsm_getline(shortbuf,255);
 					gsm_read_sms(tmpbuf,(char *)&mbbuf,255);
 					printf("Del:%x",gsm_delete_sms(tmpbuf));
 				}
 			}
 			else if(tti==GSM_RESP_ISOPN)
 			{
-				tmpptr=strtok((char *)mbbuf,",");
-				printf("A: %s", tmpptr);
-				tmpptr=strtok((char *)mbbuf,",");
-				printf("B: %s", tmpptr);
-				conn_state=CONN_OPEN;
+				printf("Buf: %s ", shortbuf);
+				tmpptr=strtok((char *)shortbuf," ,");
+				tmpptr=strtok(NULL,", ");
+				if (tmpptr[0]=='1')
+				{
+					printf("Data srvc Open");
+					conn_state=CONN_OPEN;
+				}
+				else
+				{	
+					printf("Data srvc Closed");
+					conn_state=CONN_DISC;
+				}
+				
 			}
 			else if(tti==GSM_RESP_ISTRN)
 			{
-				printf("CONN");
 				conn_state=CONN_CONN;
 			}
+			else if(tti==GSM_HTTP_RESULT)
+			{
+				// Detta funkar inte. Flytta till http-delen. Mer logiskt också.
+				printf("HTTP Result: %s",shortbuf);
+				gsm_read_sms(tmpbuf,(char *)&mbbuf,255);
+				flush_gsm();
+				conn_state=CONN_DISC;
+			}
+			
 			else
 			{
-				printf("%x->%s\n",tti,mbbuf);
+				printf("%x->%s\n",tti,shortbuf);
+				
 			}
 		
 		}
@@ -855,17 +889,38 @@ int main (void)
 		
 		if (conn_state==CONN_OPEN)
 		{
+			flush_gsm();
 			gsm_connect_data();
-			printf("CN");
 			conn_state=CONN_OP_PEND;
+			connection_timer=20;
 		}
 		else if (conn_state==CONN_CONN)
 		{
-			sermux=2;
-			printf("Connection open");
-			conn_state=CONN_DISC;
+			uint8_t tmpbuf[300];
+			printf("HTTP Connection open");
+			// Send and receive data to/from server
+			strcpy(tmpbuf,"{\"id\": \"9753\", \"boot\":12345}");
+			httpsend("funkar.inte.nu", tmpbuf);
+			conn_state=CONN_UP;
+		}
+		else if (conn_state==CONN_DISC)
+		{
+			// Disconnect
+			printf("Closing connection\n");
+			gsm_drop_data();
+			flush_gsm();
+			gsm_close_data();
+			conn_state=CONN_DOWN;
+			connection_timer=0;
+			// Close
 		}
 		
+		if ((conn_state>CONN_REG)&&(connection_timer==1))
+		{
+			printf("Timeout!");
+			conn_state=CONN_DISC;
+			connection_timer--;
+		}
 		
 		// Periodic, fires @ aprox 1Hz 
 		if (rtcc!=lasttick)
@@ -873,7 +928,12 @@ int main (void)
 			int16_t temp;
 			lasttick=rtcc;
 
-
+			//Count down an active connection timeout.
+			if (connection_timer>1)
+			{
+				connection_timer--;
+				printf("Tmr: %d ",connection_timer);
+			}
 			if (items>0)
 			{
 				DS18S20_read_decicelsius(devices[0].id, &temp);				
@@ -898,7 +958,8 @@ int main (void)
 			
 				DS18S20_start_meas(devices[0].id);
 			}
-			
+
+/** Boot state machine */			
 			if (boot_state<BOOT_DONE)
 			{
 				boot_state++;
@@ -911,8 +972,23 @@ int main (void)
 				}
 				else if (boot_state==BOOT_MBVER)
 				{
-					printf("Mbus CFG CRC: %x\n\r", mbus_validate());
-					#warning add check to eeprom and mb_setup if needed
+					uint16_t mbcrc=mbus_validate();
+					
+					if (mbcrc==eeprom_read_word(&MB_CRC))
+					{
+						printf("MB config OK\n");
+					}
+					else
+					{
+						mbus_setup((const uint8_t *)MB_CONF);
+						_delay_ms(500);
+						mbcrc=mbus_validate();
+			
+						while(!eeprom_is_ready());
+						
+						eeprom_write_word(&MB_CRC, mbcrc);
+						printf("MB Config updated.\n");
+					}
 				
 				}
 				else if (boot_state==BOOT_PRECHG)
@@ -930,7 +1006,6 @@ int main (void)
 					printf("Initializing GSM module\n");
 					if (gsm_init()==0)
 					{
-						gsminit=0;
 						printf("OK");
 					}
 

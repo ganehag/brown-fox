@@ -50,6 +50,8 @@ extern uint8_t EEPAR_2[EEPAR_2_LEN];
 #define EEPAR_3_LEN		2		
 extern uint8_t EEPAR_3[EEPAR_3_LEN];
 
+extern uint16_t MB_CRC;
+
 
 uint8_t update_param(uint8_t param, char *value);
 
