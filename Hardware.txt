@@ -1,0 +1,22 @@
+Hårdvara:
+
+Se schema.
+
+Modulen drivs ANTINGEN av batteri ELLER USB.
+
+USB är avsedd för labb och uppfyller inga krav på strömhantering osv i dagsläget.
+
+Det finns en bootloader på kortet som aktiveras genom att bygla pin 2-3 på P1.
+
+Sedan används Atmel Flip för att ladda applikationskod. (Testat med Flip ver 3.4.7) 
+
+CPU måste arbeta i RC osc 32Mhz överklockad till 48Mhz för att USB ska fungera. Det går dock att köra TTL-232 över 
+USB-kontakten för debug. USB kan ändå användas för bootloadern.
+
+Det finns en kodsnutt för att anropa bootloader från applikationen.
+
+Kortet är modiferat enl rött på schemat för att passa RFM93 och 95.
+
+Det är i dagsläget 93 som stödjs.
+
+ 
