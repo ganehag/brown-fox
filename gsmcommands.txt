@@ -1,0 +1,31 @@
+ATI			delivers a product information text.
+ATE0		Turn off echo
+ATV0		Numeric result codes
+AT^SSYNC=1	Enables the GPIO5/LED pin to drive a status LED installed in your application
+AT+CPIN?	Read PIN status // Needed? Yepp, probably late
+AT+COPS=?	Operator Selection // Needed?
+AT+CREG=2	Activates extended URC mode. 
+AT+COPS=0	Forces ME to automatically search network operator. //Needed try first
+AT+CREG?	Network registration
+AT+CNMI=2,1	Turn on notification of SMS. Indication is: +CMTI: "MT",[idx]
+AT+CMGR=[idx] read SMS
+AT+CMGD=[idx] delete SMS
+AT+CMGL		list SMS
+
+AT+CSQ		Signal quality
+AT^SMSO		Switch Off BG2-E
+AT^SMGL		List SMS
+AT^SOPS=?	Extended Operator Selection // Not needed
+
+AT^SICS=0,conType,GPRS0
+AT^SICS=0,"inactTO", "20"
+AT^SICS=0,apn,"online.telia.se"
+AT^SISS=0,SRVTYPE,TRANSPARENT
+AT^SICS=0,ALPHABET,1
+AT^SISS=0,ALPHABET,1
+AT^SISS=0,ADDRESS,"www.hoj.nu:80"
+
+
+AT^SISC=0 Close
+AT^SISO=0 OPEN
+AT^SIST=0 Transarent
